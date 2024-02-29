@@ -1,35 +1,54 @@
 
 /*Default styles*/
+:root {
+    --main-color: #DD615B;
+    --light-color: #ffc3cc;
+    --text-color: #373030;
+}
 
 body {
     font-family: "Nunito", "Avenir Next", sans-serif;
+    --accent-color: var(--main-color)
+
 }
 
 p, li {
-    color: #3b4348;
+    color: var(--text-color)
 }
 
 .todo {
-    display: flex
+    display: flex;
+    flex-direction: column;
+
 }
 
-.todo > .drag-handle {
+.todo > .todo-main-content {
+    display: flex;
+    border-bottom: 0.2rem solid var(--accent-color)
+}
+
+.todo > .subtodo-list {
+    border-bottom: 0.2rem solid var(--main-color)
+}
+
+.todo-list > :first-child {
+    border-top: 0.2rem solid var(--accent-color);
+}
+
+.todo-main-content > .drag-handle {
     width: 2rem
 }
 
 .todo-text {
     flex-grow: 1;
     display: flex;
-    border: 0.2rem solid #DD615B;
-    border-radius: 1em;
-    margin: 1%;
 }
 
 .todo-text > * {
     margin-left: 1rem;
 }
 
-.todo-text:last-child {
+.todo-text > :last-child {
     margin-right: 1rem;
 }
 
@@ -39,11 +58,26 @@ p, li {
     width: 1.25rem;
     height: 1.25rem;
     border-radius: 4px;
-    border: 0.2rem solid #DD615B;
+    border: 0.2rem solid var(--accent-color);
     align-self: center;
     cursor: pointer;
 }
 
 .todo-text > input[type=checkbox]:checked {
-    background-color: #DD615B;
+    background-color: var(--accent-color);
 }
+
+.subtodo-list {
+    --accent-color: var(--light-color);
+    --text-color: #7f7171;
+}
+
+.subtodo-list > :first-child {
+    border-top: none;
+}
+
+.subtodo-list > :last-child > .todo-main-content {
+    border-bottom: none
+}
+
+

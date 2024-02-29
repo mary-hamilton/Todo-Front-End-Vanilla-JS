@@ -36,7 +36,7 @@ function makeTodo(todoData) {
 }
 
 function renderTodos(todoList) {
-    let listContainer = document.getElementById("todo-list")
+    let listContainer = document.getElementById("main-todo-list")
     // Storing subtodos in a list until all primary todos have been appended to the document
     let subtodoLists = [];
     for (let todoData of todoList) {

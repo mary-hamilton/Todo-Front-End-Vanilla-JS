@@ -1,38 +1,32 @@
 
 /*Default styles*/
 :root {
-    --main-color: #DD615B;
-    --light-color: #ffc3cc;
-    --text-color: #373030;
+    --main-colour: #DD615B;
+    --secondary-colour: #ffc3cc;
+    --text-colour: #373030;
+    --secondary-text-colour: #7f7171;
 }
 
 body {
     font-family: "Nunito", "Avenir Next", sans-serif;
-    --accent-color: var(--main-color)
+    --accent-color: var(--main-colour)
 
 }
 
 p, li {
-    color: var(--text-color)
+    color: var(--text-colour)
 }
 
 .todo {
     display: flex;
     flex-direction: column;
-
 }
 
 .todo > .todo-main-content {
     display: flex;
-    border-bottom: 0.2rem solid var(--accent-color)
-}
-
-.todo > .subtodo-list {
-    border-bottom: 0.2rem solid var(--main-color)
-}
-
-.todo-list > :first-child {
+    border-bottom: 0.2rem solid var(--accent-color);
     border-top: 0.2rem solid var(--accent-color);
+    margin-bottom: -0.2rem;
 }
 
 .todo-main-content > .drag-handle {
@@ -67,17 +61,13 @@ p, li {
     background-color: var(--accent-color);
 }
 
+/*Subtodo variations*/
+
 .subtodo-list {
-    --accent-color: var(--light-color);
-    --text-color: #7f7171;
+    --accent-color: var(--secondary-colour);
+    --text-colour: var(--secondary-text-colour)
 }
 
-.subtodo-list > :first-child {
+.subtodo-list > .todo > .todo-main-content {
     border-top: none;
 }
-
-.subtodo-list > :last-child > .todo-main-content {
-    border-bottom: none
-}
-
-

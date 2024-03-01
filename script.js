@@ -1,22 +1,24 @@
-import { fetchAllTodos } from "./httpClient.mjs";
+import { fetchAllTodos } from "./httpClient.js";
 
 
 let dummyTodos = [
     {title: "The first todo goes here", id: 1},
-    {title: "The second todo goes here", id: 2, parentId: 1},
-    {title: "The third todo goes here", id: 3, parentId: 1},
+    {title: "The second todo goes here", id: 2, parent_id: 1},
+    {title: "The third todo goes here", id: 3, parent_id: 1},
     {title: "And the fourth goes here", id: 4},
-    {title: "AND the fifth goes here", id: 5, parentId: 4},
+    {title: "AND the fifth goes here", id: 5, parent_id: 4},
     {title: "Sneaky extra lad", id: 6},
-    {title: "Who's this now!", id: 7, parentId: 4}
+    {title: "Who's this now!", id: 7, parent_id: 4}
 ]
 
 let realTodos = []
 
 function getAllTodos() {
     fetchAllTodos().then(todos => {
-        realTodos = todos;
-        renderTodos(realTodos)
+        if (todos) {
+            realTodos = todos;
+            renderTodos(realTodos)
+        }
     })
     
 }
@@ -74,11 +76,11 @@ function setDropTargetable(todoEl) {
         event.preventDefault()
     })
     todoEl.addEventListener("drop", (event) => {
-        let childId = event.dataTransfer.getData("text/plain")
-        let parentId = todoEl.id
-        if (childId !== parentId) {
-            let childData = dummyTodos.find((e) => e.id === parseInt(childId))
-            childData.parentId = parentId
+        let child_id = event.dataTransfer.getData("text/plain")
+        let parent_id = todoEl.id
+        if (child_id !== parent_id) {
+            let childData = dummyTodos.find((e) => e.id === parseInt(child_id))
+            childData.parent_id = parent_id
             getAllTodos()
             event.preventDefault()
         }
@@ -107,6 +109,9 @@ function makeTodo(todoData) {
 }
 
 function renderTodos(todoDataList) {
+    
+    // TODO add some logic in here to handle what happens when todoDataList is empty
+    
     let listContainer = document.getElementById("main-todo-list")
 
     // Empty before rerendering
@@ -118,15 +123,15 @@ function renderTodos(todoDataList) {
     
     for (let todoData of todoDataList) {
         let todoEl = makeTodo(todoData);
-        if (todoData.parentId) {
+        if (todoData.parent_id) {
             // Get our subtodo list for this task if we already have one
-            let subtodoListEntry = subtodoLists.find(e => e.parentId === todoData.parentId)
+            let subtodoListEntry = subtodoLists.find(e => e.parent_id === todoData.parent_id)
             if (!subtodoListEntry) {
                 let subtodoList = document.createElement("ul");
                 subtodoList.classList.add("todo-list", "subtodo-list")
-                subtodoList.setAttribute("id", `${todoData.parentId}-subtodo-list`)
+                subtodoList.setAttribute("id", `${todoData.parent_id}-subtodo-list`)
                 subtodoList.appendChild(todoEl)
-                subtodoLists.push({parentId: todoData.parentId, list: subtodoList})
+                subtodoLists.push({parent_id: todoData.parent_id, list: subtodoList})
             } else {
                 subtodoListEntry.list.appendChild(todoEl)
             }
@@ -138,7 +143,7 @@ function renderTodos(todoDataList) {
     }
     // Adding the subtodos
     for (let subtodoListEntry of subtodoLists) {
-        let parentTodo = document.getElementById(subtodoListEntry.parentId)
+        let parentTodo = document.getElementById(subtodoListEntry.parent_id)
         parentTodo.appendChild(subtodoListEntry.list)
     }
 }

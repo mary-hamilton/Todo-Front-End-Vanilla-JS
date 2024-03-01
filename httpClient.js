@@ -1,23 +1,24 @@
 
-function loadConfig() {
-    const isDevelopment = window.location.hostname === 'localhost'; // Adjust this condition based on your development environment
+// function loadConfig() {
+//     const isDevelopment = window.location.hostname === 'localhost'; // Adjust this condition based on your development environment
+//
+//     if (isDevelopment) {
+//         return import('./config/config.dev.js').then(module => module.default);
+//     } else {
+//         // Prod environment stuff here
+//     }
+// }
+//
+// let baseUrl = ""
+//
+// loadConfig().then((config) => {
+//     if (config) {
+//         console.log(config)
+//         baseUrl = config.apiUrl
+//     }
+// })
 
-    if (isDevelopment) {
-        return import('./config/config.dev.js').then(module => module.default);
-    } else {
-        // Prod environment stuff here
-    }
-}
-
-let baseUrl = ""
-
-loadConfig().then((config) => {
-    if (config) {
-        baseUrl = config.apiUrl
-    }
-})
-
-baseUrl = "http://localhost:5000"
+let baseUrl = "http://localhost:5000"
 
 function genericFetch({ url, method, data, basicAuth = undefined }) {
 
@@ -45,7 +46,18 @@ function genericFetch({ url, method, data, basicAuth = undefined }) {
     }
 
     return fetch(`${baseUrl}${url}`, init)
-        .then(response => response.json())
+        .then(response => {
+            if(!response.ok) {
+                return response.json()
+                    // TODO reformat the way errors are sent from the backend
+                    .then(error => {
+                        throw error
+                    })
+            }
+            return response.json()
+        })
+        // TODO proper error handling
+        .catch(error => console.log(error))
 }
 
 export function signUp(signUpData) {

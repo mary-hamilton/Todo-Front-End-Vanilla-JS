@@ -46,7 +46,6 @@ p, li {
     margin-right: 1rem;
 }
 
-
 .todo-text > input[type=checkbox] {
     appearance: none;
     width: 1.25rem;

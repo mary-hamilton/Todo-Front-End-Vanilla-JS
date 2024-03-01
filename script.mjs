@@ -1,3 +1,6 @@
+import { fetchAllTodos } from "./httpClient.mjs";
+
+
 let dummyTodos = [
     {title: "The first todo goes here", id: 1},
     {title: "The second todo goes here", id: 2, parentId: 1},
@@ -7,6 +10,16 @@ let dummyTodos = [
     {title: "Sneaky extra lad", id: 6},
     {title: "Who's this now!", id: 7, parentId: 4}
 ]
+
+let realTodos = []
+
+function getAllTodos() {
+    fetchAllTodos().then(todos => {
+        realTodos = todos;
+        renderTodos(realTodos)
+    })
+    
+}
 
 function makeTodoMainContent() {
     let mainContent = document.createElement("div")
@@ -66,7 +79,7 @@ function setDropTargetable(todoEl) {
         if (childId !== parentId) {
             let childData = dummyTodos.find((e) => e.id === parseInt(childId))
             childData.parentId = parentId
-            renderTodos(dummyTodos)
+            getAllTodos()
             event.preventDefault()
         }
     })
@@ -130,4 +143,4 @@ function renderTodos(todoDataList) {
     }
 }
 
-renderTodos(dummyTodos)
+getAllTodos()

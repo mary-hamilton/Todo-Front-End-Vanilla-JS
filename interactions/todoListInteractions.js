@@ -1,5 +1,5 @@
 import {toggleTodoParent} from "../APIclient.js";
-import {updateUI} from "../ui/uiUtils.js";
+import {removeSubTodos, renderSubTodos, toggleRenderSubTodos} from "../ui/uiUtils.js";
 
 export function handleTodoDrag(event) {
     const todoToDragId = event.target.closest(".todo").id;
@@ -7,20 +7,31 @@ export function handleTodoDrag(event) {
 }
 
 export function handleTodoDrop(event) {
-    // Do not need to handle none values of parent_id in
-    // here I think because that will be handled in
-    // a separate function for dropping todos outside
-    // to*do list
+    
+    event.preventDefault();
+    
     const draggedId = event.dataTransfer.getData("text/plain");
-    const droppedId = event.target.closest(".todo").id
-    if (draggedId !== droppedId ) {
+    const droppedOnTodo = event.target.closest(".todo");
+    const droppedOnId = droppedOnTodo.id;
+    
+    if (draggedId !== droppedOnId) {
+        // remove dragged to*do from the UI
+        const draggedTodo = document.getElementById(draggedId)
+        draggedTodo.parentNode.removeChild(draggedTodo);
         // Make api call updating value of child task's parent ID in the database
-        toggleTodoParent(draggedId, droppedId)
-            .then(responseData => {
-                updateUI();
+        toggleTodoParent(draggedId, droppedOnId)
+            .then(r => {
+                removeSubTodos(droppedOnTodo);
+                renderSubTodos(droppedOnTodo);
             })
             .catch(error => console.log(error))
-        // Update the UI by fetching all todos
-        event.preventDefault();
+
     }
+}
+
+export function handleTodoClick(event) {
+
+    const clickedTodo = event.target.closest(".todo");
+
+    toggleRenderSubTodos(clickedTodo);
 }

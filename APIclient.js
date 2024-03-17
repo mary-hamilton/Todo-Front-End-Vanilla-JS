@@ -89,6 +89,14 @@ export function fetchAllTodos() {
     })
 }
 
+export function fetchSingleTodoPlusChildren(todoId) {
+
+    return genericFetch({
+        url: `/todos/${todoId}`,
+        method: "GET",
+    })
+}
+
 export function toggleTodoParent(childId, parentId) {
 
     return genericFetch({

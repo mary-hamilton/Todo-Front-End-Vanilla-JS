@@ -2,7 +2,7 @@ import {fetchAllTodos} from "./APIclient.js";
 import {makeTodoList} from "./ui/todoList.js";
 import {makeHeader} from "./ui/header.js";
 import {handleSignupSubmit, handleLoginSubmit, handleLogoutClick} from "./interactions/authInteractions.js";
-import {handleTodoDrag, handleTodoDrop} from "./interactions/todoListInteractions.js";
+import {handleTodoClick, handleTodoDrag, handleTodoDrop} from "./interactions/todoListInteractions.js";
 import {updateUI} from "./ui/uiUtils.js";
 import {isUserLoggedIn} from "./auth.js";
 
@@ -47,5 +47,9 @@ todoListContainer.addEventListener("dragover", (event) => {
 
 todoListContainer.addEventListener("drop", (event) => {
     handleTodoDrop(event)
+})
+
+todoListContainer.addEventListener("click", (event) => {
+        handleTodoClick(event);
 })
 

@@ -18,30 +18,33 @@
 //     }
 // })
 
+import {isUserLoggedIn} from "./auth.js";
+
 let baseUrl = "http://localhost:5000"
 
-function genericFetch({ url, method, data, basicAuth = undefined }) {
+function genericFetch({ url, method, data, headers }) {
 
-    const token = localStorage.getItem('jwtToken');
+    const allHeaders = new Headers();
 
-    const headers = new Headers();
-
-    if (token) {
-        headers.append("Authorization", `Bearer ${token}`)
-    }
-
-    if (basicAuth) {
-        const { username, password } = basicAuth
-        headers.append("Authorization", `Basic  ${btoa(username + ':' + password)}`)
+    if (isUserLoggedIn()) {
+        const token = localStorage.getItem("jwtToken");
+        allHeaders.append("Authorization", `Bearer ${token}`)
     }
 
     if (data) {
-        headers.append("Content-Type", "application/json");
+        allHeaders.append("Content-Type", "application/json");
+    }
+
+    if (headers) {
+        for (let headerName in headers) {
+            const [ name, value ] = headers[headerName];
+            allHeaders.append(name, value)
+        }
     }
 
     const init = {
         method,
-        headers,
+        headers: allHeaders,
         body: data ? JSON.stringify(data) : undefined
     }
 
@@ -49,49 +52,51 @@ function genericFetch({ url, method, data, basicAuth = undefined }) {
         .then(response => {
             if(!response.ok) {
                 return response.json()
-                    // TODO reformat the way errors are sent from the backend
                     .then(error => {
                         throw error
                     })
             }
             return response.json()
         })
-        // TODO proper error handling
-        .catch(error => console.log(error))
 }
 
 export function signUp(signUpData) {
 
-    localStorage.removeItem('jwtToken')
-
-    genericFetch({
+    return genericFetch({
         url: "/signup",
         method: "POST",
         data: signUpData
-    }).then(responseData => {
-        localStorage.setItem("jwtToken", responseData.token)
-        return responseData
     })
 }
 
-export function login(basicAuth) {
+export function login(basicAuthCredentials) {
 
-    localStorage.removeItem('jwtToken')
+    const { username, password } = basicAuthCredentials;
+    const basicAuthHeader = ["Authorization", `Basic  ${btoa(username + ':' + password)}`]
 
-    genericFetch({
+    return genericFetch({
         url: "/login",
         method: "POST",
-        basicAuth
-    }).then(responseData => {
-        localStorage.setItem("jwtToken", responseData.token)
-        return responseData
-        })
+        headers: {basicAuthHeader}
+    })
 }
 
 export function fetchAllTodos() {
+
     return genericFetch({
         url: "/todos",
         method: "GET",
+    })
+}
+
+export function toggleTodoParent(childId, parentId) {
+
+    return genericFetch({
+        url: `/todos/${childId}/toggle_parent`,
+        method: "PATCH",
+        data: {
+            parent_id: parentId
+        }
     })
 }
 

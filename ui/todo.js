@@ -45,12 +45,17 @@ function setDraggable(mainContent, id) {
 
 export function makeTodo(todoData) {
     
-    const { id, title } = todoData;
+    const { id, title, checked } = todoData;
     const todoId = id;
     
-    let todoEl = document.createElement("li")
-    todoEl.classList.add("todo")
+    let todoEl = document.createElement("li");
+    todoEl.classList.add("todo");
     todoEl.id = todoId;
+
+    // Applying checked styles
+    if (checked) {
+        todoEl.classList.add("checked");
+    }
 
     let mainContent = makeTodoMainContent()
     todoEl.appendChild(mainContent)

@@ -2,6 +2,7 @@ import {makeHeader} from "./header.js";
 import {fetchAllTodos, fetchSingleTodoPlusChildren} from "../APIclient.js";
 import {makeTodoList} from "./todoList.js";
 import {isUserLoggedIn} from "../auth.js";
+import {makeTodo} from "./todo.js";
 
 
 export function renderTodoList(container, todos, isSublist = true) {
@@ -29,14 +30,16 @@ export function renderMainContent() {
     }
 }
 
-export function renderSubTodos(todoEl) {
+export function renderParentAndSubTodos(todoEl) {
 
     const todoElID = todoEl.id;
 
     fetchSingleTodoPlusChildren(todoElID)
         .then(todoData => {
+            const updatedTodoEl = makeTodo(todoData);
+            todoEl.replaceWith(updatedTodoEl);
             if (todoData.children) {
-                renderTodoList(todoEl, todoData.children)
+                renderTodoList(updatedTodoEl, todoData.children)
             }
         })
 }
@@ -57,7 +60,7 @@ export function toggleRenderSubTodos(todoEl) {
     removeSubTodos(todoEl);
 
     if (!existingSubtodoList) {
-        renderSubTodos(todoEl);
+        renderParentAndSubTodos(todoEl);
     }
 }
 

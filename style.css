@@ -67,6 +67,15 @@ p, li {
     --text-colour: var(--secondary-text-colour)
 }
 
+/* stops doubling of borders */
 .subtodo-list > .todo > .todo-main-content {
     border-top: none;
+}
+
+
+/* checked variations */
+
+/* needs the direct child combinator or you get unwanted cascade */
+.checked > .todo-main-content {
+    text-decoration: line-through;
 }

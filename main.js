@@ -2,7 +2,12 @@ import {fetchAllTodos} from "./APIclient.js";
 import {makeTodoList} from "./ui/todoList.js";
 import {makeHeader} from "./ui/header.js";
 import {handleSignupSubmit, handleLoginSubmit, handleLogoutClick} from "./interactions/authInteractions.js";
-import {handleTodoClick, handleTodoDrag, handleTodoDrop} from "./interactions/todoListInteractions.js";
+import {
+    handleTodoCheckboxClick,
+    handleTodoClick,
+    handleTodoDrag,
+    handleTodoDrop
+} from "./interactions/todoListInteractions.js";
 import {updateUI} from "./ui/uiUtils.js";
 import {isUserLoggedIn} from "./auth.js";
 
@@ -50,6 +55,12 @@ todoListContainer.addEventListener("drop", (event) => {
 })
 
 todoListContainer.addEventListener("click", (event) => {
-        handleTodoClick(event);
+    
+    if (event.target.matches("input[type='checkbox']")) {
+        handleTodoCheckboxClick(event);
+        return;
+    }
+    
+    handleTodoClick(event);
 })
 

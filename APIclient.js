@@ -108,5 +108,15 @@ export function toggleTodoParent(childId, parentId) {
     })
 }
 
+export function toggleTodoCheck(todoId, checked) {
+    return genericFetch({
+        url: `/todos/${todoId}/check`,
+        method: "PATCH",
+        data: {
+            checked: !checked
+        }
+    })
+}
+
 
 

@@ -1,5 +1,5 @@
-import {toggleTodoParent} from "../APIclient.js";
-import {removeSubTodos, renderSubTodos, toggleRenderSubTodos} from "../ui/uiUtils.js";
+import {toggleTodoCheck, toggleTodoParent} from "../APIclient.js";
+import {removeSubTodos, renderParentAndSubTodos, toggleRenderSubTodos} from "../ui/uiUtils.js";
 
 export function handleTodoDrag(event) {
     const todoToDragId = event.target.closest(".todo").id;
@@ -22,7 +22,7 @@ export function handleTodoDrop(event) {
         toggleTodoParent(draggedId, droppedOnId)
             .then(r => {
                 removeSubTodos(droppedOnTodo);
-                renderSubTodos(droppedOnTodo);
+                renderParentAndSubTodos(droppedOnTodo);
             })
             .catch(error => console.log(error))
 
@@ -31,7 +31,35 @@ export function handleTodoDrop(event) {
 
 export function handleTodoClick(event) {
 
+    // Stop this event being triggered if the checkbox is clicked
+    if (event.target.matches("input[type='checkbox']")) {
+        return;
+    }
+
     const clickedTodo = event.target.closest(".todo");
 
     toggleRenderSubTodos(clickedTodo);
+}
+
+export function handleTodoCheckboxClick(event) {
+    // Do not propagate
+    event.stopPropagation();
+    
+    // Get to*do element
+    const todoEl = event.target.closest(".todo");
+    const todoId = todoEl.id;
+    
+    // Get current checked value
+    let checked = false;
+    if (todoEl.classList.contains("checked")) {
+        checked = true;
+    }
+    
+    // API call to update value
+    toggleTodoCheck(todoId, checked)
+        .then(r => {
+            // Fetch updated data and update UI
+            renderParentAndSubTodos(todoEl);
+        })
+    
 }

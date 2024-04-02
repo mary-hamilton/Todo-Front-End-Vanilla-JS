@@ -51,12 +51,7 @@ export function makeTodo(todoData) {
     let todoEl = document.createElement("li");
     todoEl.classList.add("todo");
     todoEl.id = todoId;
-
-    // Applying checked styles
-    if (checked) {
-        todoEl.classList.add("checked");
-    }
-
+    
     let mainContent = makeTodoMainContent()
     todoEl.appendChild(mainContent)
     let dragHandle = makeDragHandle()
@@ -65,6 +60,12 @@ export function makeTodo(todoData) {
     let checkbox = makeCheckbox(todoId)
     let textContent = makeTextContent(title)
     textAndCheckboxContainer.append(checkbox, textContent)
+
+    // Applying checked styles
+    if (checked) {
+        todoEl.classList.add("checked");
+        checkbox.checked = true;
+    }
 
     return todoEl
 }

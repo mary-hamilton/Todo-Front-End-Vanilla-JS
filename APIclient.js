@@ -113,7 +113,7 @@ export function toggleTodoCheck(todoId, checked) {
         url: `/todos/${todoId}/check`,
         method: "PATCH",
         data: {
-            checked: !checked
+            checked: checked
         }
     })
 }

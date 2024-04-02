@@ -1,6 +1,11 @@
 import {toggleTodoCheck, toggleTodoParent} from "../APIclient.js";
 import {removeSubTodos, renderParentAndSubTodos, toggleRenderSubTodos} from "../ui/uiUtils.js";
 
+// function handleTodoInteraction(event, interactionFunc) {
+//     const todoEl = event.target.closest(".todo");
+//     interactionFunc(event, todoEl);
+// }
+
 export function handleTodoDrag(event) {
     const todoToDragId = event.target.closest(".todo").id;
     event.dataTransfer.setData("text/plain", todoToDragId);
@@ -32,9 +37,9 @@ export function handleTodoDrop(event) {
 export function handleTodoClick(event) {
 
     // Stop this event being triggered if the checkbox is clicked
-    if (event.target.matches("input[type='checkbox']")) {
-        return;
-    }
+    // if (event.target.matches("input[type='checkbox']")) {
+    //     return;
+    // }
 
     const clickedTodo = event.target.closest(".todo");
 
@@ -47,19 +52,40 @@ export function handleTodoCheckboxClick(event) {
     
     // Get to*do element
     const todoEl = event.target.closest(".todo");
+    
+    checkTodo(todoEl);
+    
+}
+
+function checkTodo(todoEl) {
+
     const todoId = todoEl.id;
     
-    // Get current checked value
-    let checked = false;
-    if (todoEl.classList.contains("checked")) {
-        checked = true;
-    }
+    // Update UI
+    todoEl.classList.toggle("checked");
+
+    let checked = todoEl.classList.contains("checked");
     
-    // API call to update value
+    todoEl.querySelector("input[type='checkbox']").checked = checked;
+
+    // API call to update value in DB
     toggleTodoCheck(todoId, checked)
         .then(r => {
-            // Fetch updated data and update UI
-            renderParentAndSubTodos(todoEl);
+            // Fetch updated data and update UI if we need to cascade down
+            if (checked) {
+                renderParentAndSubTodos(todoEl);
+            }
+            
         })
-    
+
+    // Cascade up the DOM *if* we are unchecking a to*do
+    if (!checked) {
+        const grandparentElement = todoEl.parentElement.parentElement;
+        const isTodo = grandparentElement.classList.contains("todo");
+        
+        if (isTodo && grandparentElement.classList.contains("checked")) {
+            checkTodo(grandparentElement);
+        }
+    }
+
 }
